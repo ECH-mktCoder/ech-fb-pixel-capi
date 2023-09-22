@@ -48,11 +48,11 @@
 		jQuery.post(ajaxurl, fb_data, function(rs) {
 			let result = JSON.parse(rs);
 			Object.keys(result).forEach(eventName => {
-				const event = result[eventName];
+				let event = result[eventName];
 				if (event.hasOwnProperty('events_received')) {
 						console.log(eventName + ': ' + event.events_received);
 				}else{
-					console(event);
+					console.log(event);
 				}
 			});
 		});
