@@ -93,6 +93,7 @@ class Ech_Fb_Pixel_Capi_Public {
 		$event_id = $_POST['event_id'];
 		$event_name = $_POST['event_name'];
 		$content_name = $_POST['content_name'];
+		$extra_event = $_POST['extra_event'];
 		$current_page = $_POST['website_url'];
 		$user_ip = $_SERVER['REMOTE_ADDR'];
 		$user_agent = $_POST['user_agent'];
@@ -132,13 +133,32 @@ class Ech_Fb_Pixel_Capi_Public {
 						}
 				]
 		}'; //param_data2
+		
 		$event_result	= $this->fb_curl($param_data1);
 		$purchase	= $this->fb_curl($param_data2);
-
 		$result_ary = array(
 			$event_name => json_decode($event_result),
 			'Purchase' => json_decode($purchase)
 		);
+		if(!empty($extra_event)){
+			$param_data3 = '{
+					"data": [
+							{
+									"event_id": "'.$extra_event.$event_id.'",
+									"event_name": "'.$extra_event.'",
+									"event_time": '.time().',
+									"action_source": "website",
+									"event_source_url": "'.$current_page.'",
+									"user_data": {
+											"client_ip_address": "'.$user_ip.'",
+											"client_user_agent": "'.$user_agent.'"
+									}
+							}
+					]
+			}'; //param_data3
+			$completeRegistration	= $this->fb_curl($param_data3);
+			$result_ary[$extra_event]=json_decode($completeRegistration);
+		}
 		$result = json_encode($result_ary);
 		echo $result;
 

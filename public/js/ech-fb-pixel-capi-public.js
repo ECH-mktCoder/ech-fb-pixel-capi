@@ -8,13 +8,13 @@
 		if(webDomain != "www.drreborn.com"){
 			
 			jQuery("[data-btn='whatsapp'],.f_wtsapp_btn a").on('click', function(){
-				FBEventTrack('Contact','whatsapp');
+				FBEventTrack('Contact','whatsapp','CompleteRegistration');
 			});
 			
 			//omnichat whatsapp button
 			jQuery('body').on('click', function(e) { 
 				if(jQuery(e.target).attr('id')=='social-subscriber-link-whatsapp-button'){
-					FBEventTrack('Contact','whatsapp');
+					FBEventTrack('Contact','whatsapp','CompleteRegistration');
 				}
 			});
 
@@ -27,11 +27,15 @@
 		});
 		/*********** (END) Phone Click send to FB Capi ***********/
 	});
-	function FBEventTrack(eventName,contentName) {
+	function FBEventTrack(eventName,contentName,extraEvent) {
 
 		const event_id = new Date().getTime();
-		const event_name = eventName;
-		const content_name = contentName;
+		let event_name = eventName;
+		let content_name = contentName;
+		let extra_event = "";
+		if(typeof extraEvent != "undefined"){
+			extra_event = extraEvent;
+		}
 		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
 		var ajaxurl = "/wp-admin/admin-ajax.php";
 		var fb_data = {
@@ -41,10 +45,13 @@
 			'event_id': event_id,
 			'event_name': event_name,
 			'content_name': content_name,
+			'extra_event' : extraEvent
 		};
 		fbq('track', event_name , {}, {eventID: event_name + event_id});
 		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
-
+		if(extra_event != ""){
+			fbq('track', 'CompleteRegistration',{},{eventID: 'CompleteRegistration' + event_id});
+		}
 		jQuery.post(ajaxurl, fb_data, function(rs) {
 			let result = JSON.parse(rs);
 			Object.keys(result).forEach(eventName => {
