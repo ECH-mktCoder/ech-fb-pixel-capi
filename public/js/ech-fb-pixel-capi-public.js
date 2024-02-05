@@ -30,11 +30,18 @@
 	function FBEventTrack(eventName,contentName,extraEvent) {
 
 		const event_id = new Date().getTime();
-		let event_name = eventName;
-		let content_name = contentName;
+		const event_name = eventName;
+		const content_name = contentName;
+		const website_url = window.location.href;
+		const fbp = getCookieValue('_fbp');
 		let extra_event = "";
 		if(typeof extraEvent != "undefined"){
 			extra_event = extraEvent;
+		}
+		let fbc = getCookieValue('_fbc');
+		if(fbc==null){
+			let urlParams = new URLSearchParams(website_url);
+			fbc = urlParams.get('fbclid');
 		}
 		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
 		var ajaxurl = "/wp-admin/admin-ajax.php";
@@ -45,7 +52,8 @@
 			'event_id': event_id,
 			'event_name': event_name,
 			'content_name': content_name,
-			'extra_event' : extraEvent
+			'fbp': fbp,
+			'fbc': fbc,
 		};
 		fbq('track', event_name , {}, {eventID: event_name + event_id});
 		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
@@ -65,5 +73,18 @@
 		});
 
 	} // FBEventTrack
+
+	function getCookieValue(cookieName) {
+    var name = cookieName + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var cookieArray = decodedCookie.split(';');
+    for(var i = 0; i < cookieArray.length; i++) {
+        var cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name) == 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return null;
+	} //getCookieValue
 
 })( jQuery );

@@ -97,6 +97,8 @@ class Ech_Fb_Pixel_Capi_Public {
 		$current_page = $_POST['website_url'];
 		$user_ip = $_SERVER['REMOTE_ADDR'];
 		$user_agent = $_POST['user_agent'];
+		$fbp = $_POST['fbp'];
+		$fbc = $_POST['fbc'];
 		$param_data1 = '{
 				"data": [
 						{
@@ -107,7 +109,9 @@ class Ech_Fb_Pixel_Capi_Public {
 								"event_source_url": "'.$current_page.'",
 								"user_data": {
 										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'"
+										"client_user_agent": "'.$user_agent.'",
+										"fbp": "'.$fbp.'",
+										"fbc": "'.$fbc.'",
 								}
 						}
 				]
@@ -128,7 +132,9 @@ class Ech_Fb_Pixel_Capi_Public {
                 },
 								"user_data": {
 										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'"
+										"client_user_agent": "'.$user_agent.'",
+										"fbp": "'.$fbp.'",
+										"fbc": "'.$fbc.'",
 								}
 						}
 				]
