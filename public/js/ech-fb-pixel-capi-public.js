@@ -52,6 +52,7 @@
 			'event_id': event_id,
 			'event_name': event_name,
 			'content_name': content_name,
+			'extra_event' : extraEvent,
 			'fbp': fbp,
 			'fbc': fbc,
 		};

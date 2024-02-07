@@ -157,7 +157,9 @@ class Ech_Fb_Pixel_Capi_Public {
 									"event_source_url": "'.$current_page.'",
 									"user_data": {
 											"client_ip_address": "'.$user_ip.'",
-											"client_user_agent": "'.$user_agent.'"
+											"client_user_agent": "'.$user_agent.'",
+											"fbp": "'.$fbp.'",
+											"fbc": "'.$fbc.'"
 									}
 							}
 					]
