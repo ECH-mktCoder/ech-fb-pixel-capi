@@ -29,11 +29,12 @@
 	});
 	function FBEventTrack(eventName,contentName,extraEvent) {
 
-		const event_id = new Date().getTime();
-		const event_name = eventName;
-		const content_name = contentName;
-		const website_url = window.location.href;
-		const fbp = getCookieValue('_fbp');
+		const event_id = new Date().getTime(),
+					event_name = eventName,
+					content_name = contentName,
+					website_url = window.location.href,
+					website_url_no_para = location.origin + location.pathname,
+					fbp = getCookieValue('_fbp');
 		let extra_event = "";
 		if(typeof extraEvent != "undefined"){
 			extra_event = extraEvent;
@@ -47,7 +48,7 @@
 		var ajaxurl = "/wp-admin/admin-ajax.php";
 		var fb_data = {
 			'action': 'FB_event_click',
-			'website_url': window.location.href,
+			'website_url': website_url_no_para,
 			'user_agent':navigator.userAgent,
 			'event_id': event_id,
 			'event_name': event_name,
