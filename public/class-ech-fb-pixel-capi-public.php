@@ -95,10 +95,16 @@ class Ech_Fb_Pixel_Capi_Public {
 		$content_name = $_POST['content_name'];
 		$extra_event = $_POST['extra_event'];
 		$current_page = $_POST['website_url'];
-		$user_ip = $_SERVER['REMOTE_ADDR'];
 		$user_agent = $_POST['user_agent'];
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} else {
+			$user_ip = $_SERVER['REMOTE_ADDR'];
+		}
 		$param_data1 = '{
 				"data": [
 						{
