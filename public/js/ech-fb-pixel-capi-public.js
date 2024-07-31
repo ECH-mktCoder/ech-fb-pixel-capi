@@ -3,9 +3,9 @@
 
 	$(function() {
 		/*********** Whatsapp Click send to FB Capi ***********/
-		let webDomain = window.location.host;
+		// let webDomain = window.location.host;
 		// there is global trigger code in Dr.reborn web function.php 
-		if(webDomain != "www.drreborn.com"){
+		// if(webDomain != "www.drreborn.com"){
 			
 			jQuery("[data-btn='whatsapp'],.f_wtsapp_btn a").on('click', function(){
 				FBEventTrack('Contact','whatsapp','CompleteRegistration');
@@ -18,7 +18,7 @@
 				}
 			});
 
-		}
+		// }
 		/*********** (END) Whatsapp Click send to FB Capi ***********/
 
 		/*********** Phone Click send to FB Capi ***********/
