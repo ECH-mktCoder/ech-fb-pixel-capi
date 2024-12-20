@@ -89,7 +89,7 @@ class Ech_Fb_Pixel_Capi_Public {
 	}
 
 	public function FB_event_click() {
-
+		
 		$event_id = $_POST['event_id'];
 		$event_name = $_POST['event_name'];
 		$content_name = $_POST['content_name'];
@@ -105,79 +105,99 @@ class Ech_Fb_Pixel_Capi_Public {
 		} else {
 			$user_ip = $_SERVER['REMOTE_ADDR'];
 		}
-		$param_data1 = '{
-				"data": [
-						{
-								"event_id": "'.$event_name.$event_id.'",
-								"event_name": "'.$event_name.'",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'",
-										"fbp": "'.$fbp.'",
-										"fbc": "'.$fbc.'",
-								}
-						}
-				]
-		}'; //param_data1
 
-		$param_data2 = '{
-				"data": [
-						{
-								"event_id": "Purchase'.$event_id.'",
-								"event_name": "Purchase",
-								"event_time": '.time().',
-								"action_source": "website",
-								"event_source_url": "'.$current_page.'",
-								"custom_data":{
-                    "content_name": "'.$content_name.'",
-                    "currency": "HKD",
-                    "value": "0"
-                },
-								"user_data": {
-										"client_ip_address": "'.$user_ip.'",
-										"client_user_agent": "'.$user_agent.'",
-										"fbp": "'.$fbp.'",
-										"fbc": "'.$fbc.'",
-								}
-						}
-				]
-		}'; //param_data2
-		
-		$event_result	= $this->fb_curl($param_data1);
-		$purchase	= $this->fb_curl($param_data2);
-		$result_ary = array(
-			$event_name => json_decode($event_result),
-			'Purchase' => json_decode($purchase)
-		);
-		if(!empty($extra_event)){
-			$param_data3 = '{
-					"data": [
-							{
-									"event_id": "'.$extra_event.$event_id.'",
-									"event_name": "'.$extra_event.'",
-									"event_time": '.time().',
-									"action_source": "website",
-									"event_source_url": "'.$current_page.'",
-									"user_data": {
-											"client_ip_address": "'.$user_ip.'",
-											"client_user_agent": "'.$user_agent.'",
-											"fbp": "'.$fbp.'",
-											"fbc": "'.$fbc.'"
-									}
-							}
-					]
-			}'; //param_data3
-			$completeRegistration	= $this->fb_curl($param_data3);
-			$result_ary[$extra_event]=json_decode($completeRegistration);
+		$user_data = [
+			"client_ip_address"  => $user_ip,
+			"client_user_agent"  => $user_agent,
+			"fbp"                => $fbp,
+			"fbc"                => $fbc,
+		];
+
+		$registered_settings = get_registered_settings();
+		$withoutPII_str='';
+		if (array_key_exists('ech_lfg_accept_pll', $registered_settings)) {
+				$accept_pll = get_option( 'ech_lfg_accept_pll' );
+				if( $accept_pll== 0 ) {
+					$withoutPII_str='WithoutPII';
+				}
 		}
-		$result = json_encode($result_ary);
-		echo $result;
 
+		$param_datas = [
+			$event_name => [
+				"event_id" => $event_name.$event_id,
+				"event_name" => $event_name,
+				"event_time" => time(),
+				"action_source" => "website",
+				"event_source_url" => $current_page,
+				"user_data" => $user_data
+			],
+			'Purchase'.$withoutPII_str => [
+				"event_id" => "Purchase".$event_id,
+				"event_name" => "Purchase".$withoutPII_str,
+				"event_time" => time(),
+				"action_source" => "website",
+				"event_source_url" => $current_page,
+				"user_data" => $user_data,
+				"custom_data" => [
+					"content_name" => $content_name,
+					"currency" => "HKD",
+					"value" => 0.00
+				],
+			],
+		];
+		if(!empty($extra_event)){
+			$param_datas[$extra_event.$withoutPII_str] = [
+				"event_id" => $extra_event.$event_id,
+				"event_name" => $extra_event.$withoutPII_str,
+				"event_time" => time(),
+				"action_source" => "website",
+				"event_source_url" => $current_page,
+				"user_data" => $user_data
+			];
+		}
+		$results = [];
+    foreach ($param_datas as $key => $data) {
+        $results[$key] = json_decode($this->fb_curl(json_encode(['data' => [$data]])));
+    }
+		echo json_encode($results);
 		wp_die();
-	
+	}
+
+	public function FB_thanks_page_view() {
+		
+		$event_id = $_POST['event_id'];
+		$current_page = $_POST['website_url'];
+		$user_agent = $_POST['user_agent'];
+		$fbp = $_POST['fbp'];
+		$fbc = $_POST['fbc'];
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} else {
+			$user_ip = $_SERVER['REMOTE_ADDR'];
+		}
+
+		$param_data = '{
+			"data": [
+					{
+							"event_id": "ThanksPageView'.$event_id.'",
+							"event_name": "ThanksPageView",
+							"event_time": '.time().',
+							"action_source": "website",
+							"event_source_url": "'.$current_page.'",
+							"user_data": {
+									"client_ip_address": "'.$user_ip.'",
+									"client_user_agent": "'.$user_agent.'",
+									"fbp": "'.$fbp.'",
+									"fbc": "'.$fbc.'",
+							}
+					}
+			]
+		}';
+		$result = $this->fb_curl($param_data);
+		echo $result;
+		wp_die();
 	}
 
 	private function fb_curl($param_data) {

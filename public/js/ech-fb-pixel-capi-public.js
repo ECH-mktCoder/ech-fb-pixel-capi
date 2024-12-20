@@ -2,6 +2,9 @@
 	'use strict';
 
 	$(function() {
+
+		FBThanksPageView();
+		
 		/*********** Whatsapp Click send to FB Capi ***********/
 		// let webDomain = window.location.host;
 		// there is global trigger code in Dr.reborn web function.php 
@@ -28,7 +31,6 @@
 		/*********** (END) Phone Click send to FB Capi ***********/
 	});
 	function FBEventTrack(eventName,contentName,extraEvent) {
-
 		const event_id = new Date().getTime(),
 					event_name = eventName,
 					content_name = contentName,
@@ -45,8 +47,8 @@
 			fbc = urlParams.get('fbclid');
 		}
 		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
-		var ajaxurl = "/wp-admin/admin-ajax.php";
-		var fb_data = {
+		const ajaxurl = "/wp-admin/admin-ajax.php";
+		const fb_data = {
 			'action': 'FB_event_click',
 			'website_url': website_url_no_para,
 			'user_agent':navigator.userAgent,
@@ -58,7 +60,7 @@
 			'fbc': fbc,
 		};
 		fbq('track', event_name , {}, {eventID: event_name + event_id});
-		fbq('track', 'Purchase', {value: 0, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
+		fbq('track', 'Purchase', {value: 0.00, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
 		if(extra_event != ""){
 			fbq('track', 'CompleteRegistration',{},{eventID: 'CompleteRegistration' + event_id});
 		}
@@ -76,6 +78,41 @@
 
 	} // FBEventTrack
 
+	function FBThanksPageView() {
+		const url = window.location.href;
+		const isThanksPage = url.includes('/thanks');
+		if(isThanksPage){
+			const event_id = new Date().getTime(),
+					website_url = window.location.href,
+					website_url_no_para = location.origin + location.pathname,
+					fbp = getCookieValue('_fbp');
+			let fbc = getCookieValue('_fbc');
+			if(fbc==null){
+				let urlParams = new URLSearchParams(website_url);
+				fbc = urlParams.get('fbclid');
+			}
+			const ajaxurl = "/wp-admin/admin-ajax.php";
+			const fb_data = {
+				'action': 'FB_thanks_page_view',
+				'event_id': event_id,
+				'website_url': website_url_no_para,
+				'user_agent':navigator.userAgent,
+				'fbp': fbp,
+				'fbc': fbc,
+			};
+			fbq('trackCustom', 'ThanksPageView', {}, { eventID: event_id });
+			jQuery.post(ajaxurl, fb_data, function(rs) {
+				let result = JSON.parse(rs);
+				if(result.hasOwnProperty('events_received')){
+					console.log('ThanksPageView : ' + result.events_received);
+				}else{
+					console.log(result);
+				}
+	
+			});
+		}
+
+	}
 	function getCookieValue(cookieName) {
     var name = cookieName + "=";
     var decodedCookie = decodeURIComponent(document.cookie);

@@ -23,6 +23,22 @@
     ?>
       <h2>General Settings</h2>
       <div class="form_row">
+        <?php
+        $registered_settings = get_registered_settings();
+        if (array_key_exists('ech_lfg_accept_pll', $registered_settings)) :?>
+          <?php if(get_option( 'ech_lfg_accept_pll' ) == 1):?>
+            <h3>Accept Pll: ON</h3>
+            <?php elseif(get_option( 'ech_lfg_accept_pll' ) == 0):?>
+              <h3>Accept Pll: OFF</h3>
+            <?php else:?>
+              <h3 style="color:red">Accept Pll: 請先到ECH Form Setting</h3>
+            <?php endif;?>
+        <?php else:?>
+          <h3 style="color:red">Accept Pll: 請先到ECH Form Setting</h3>
+        <?php endif;?>
+        <h4>(如果需要更改請到ECH Form)</h4>
+      </div>
+      <div class="form_row">
           <label>Pixel id: </label>
           <input type="text" name="ech_fbpcapi_pixel_id" value="<?= htmlspecialchars(get_option( 'ech_fbpcapi_pixel_id' ))?>" id="" />
       </div>

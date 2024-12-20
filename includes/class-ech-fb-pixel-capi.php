@@ -181,6 +181,10 @@ class Ech_Fb_Pixel_Capi {
 		// ^^^ register FB Click CAPI
 		$this->loader->add_action( 'wp_ajax_FB_event_click', $plugin_public, 'FB_event_click' );
 		$this->loader->add_action( 'wp_ajax_nopriv_FB_event_click', $plugin_public, 'FB_event_click' );
+		
+		// ^^^ register FB ThanksPageView
+		$this->loader->add_action( 'wp_ajax_FB_thanks_page_view', $plugin_public, 'FB_thanks_page_view' );
+		$this->loader->add_action( 'wp_ajax_nopriv_FB_thanks_page_view', $plugin_public, 'FB_thanks_page_view' );
 	}
 
 	/**
