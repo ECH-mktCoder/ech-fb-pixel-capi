@@ -100,7 +100,7 @@
 				'fbp': fbp,
 				'fbc': fbc,
 			};
-			fbq('trackCustom', 'ThanksPageView', {}, { eventID: event_id });
+			fbq('trackCustom', 'ThanksPageView', {}, { eventID: 'ThanksPageView' + event_id });
 			jQuery.post(ajaxurl, fb_data, function(rs) {
 				let result = JSON.parse(rs);
 				if(result.hasOwnProperty('events_received')){
