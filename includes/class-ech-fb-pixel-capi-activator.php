@@ -31,6 +31,11 @@ class Ech_Fb_Pixel_Capi_Activator {
 	 */
 	public static function activate() {
 
+		$getAcceptPll = get_option( 'ech_lfg_accept_pll' );   
+		if(empty($getAcceptPll)) {
+			add_option( 'ech_lfg_accept_pll', 1 );
+		}
+
 	}
 
 }
