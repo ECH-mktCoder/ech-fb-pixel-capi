@@ -86,6 +86,8 @@ class Ech_Fb_Pixel_Capi_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/ech-fb-pixel-capi-public.js', array( 'jquery' ), $this->version, false );
 
+		$getAcceptPll = get_option('ech_lfg_accept_pll');
+		wp_localize_script($this->plugin_name, 'echPll', $getAcceptPll);
 	}
 
 	public function FB_event_click() {
@@ -170,6 +172,10 @@ class Ech_Fb_Pixel_Capi_Public {
 		$user_agent = $_POST['user_agent'];
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
+		$user_email = $_POST['user_email'];
+		$phone = $_POST['user_phone'];
+		$user_fn = $_POST['user_fn'];
+		$user_ln = $_POST['user_ln'];
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
 		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -178,24 +184,32 @@ class Ech_Fb_Pixel_Capi_Public {
 			$user_ip = $_SERVER['REMOTE_ADDR'];
 		}
 
-		$param_data = '{
-			"data": [
-					{
-							"event_id": "ThanksPageView'.$event_id.'",
-							"event_name": "ThanksPageView",
-							"event_time": '.time().',
-							"action_source": "website",
-							"event_source_url": "'.$current_page.'",
-							"user_data": {
-									"client_ip_address": "'.$user_ip.'",
-									"client_user_agent": "'.$user_agent.'",
-									"fbp": "'.$fbp.'",
-									"fbc": "'.$fbc.'",
-							}
-					}
-			]
-		}';
-		$result = $this->fb_curl($param_data);
+		$user_data = array_filter([
+			"em" => $user_email,
+			"client_ip_address" => $user_ip,
+			"client_user_agent" => $user_agent,
+			"fbp" => $fbp,
+			"fbc" => $fbc,
+			"ph" => $user_phone,
+			"fn" => $user_fn,
+			"ln" => $user_ln,
+		]);
+
+		$param_data = [
+			'event_id' => 'ThanksPageView' . $event_id,
+			'event_name' => 'ThanksPageView',
+			'event_time' => time(),
+			'action_source' => 'website',
+			'event_source_url' => $current_page,
+			'user_data' => $user_data,
+			"custom_data" => [
+				"currency" => "HKD",
+				"value" => 0.00,
+				"content_category" => "Thank You Page"
+			],
+		];
+
+		$result = $this->fb_curl(json_encode(['data' => [$param_data]]));
 		echo $result;
 		wp_die();
 	}
