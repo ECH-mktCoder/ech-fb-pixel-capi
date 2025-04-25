@@ -63,7 +63,7 @@
 			'fbp': fbp,
 			'fbc': fbc,
 		};
-		if(Pll){
+		if(parseInt(Pll)){
 			fbq('track', event_name , {}, {eventID: event_name + event_id});
 			fbq('track', 'Purchase', {value: 0.00, currency: 'HKD'}, {eventID: 'Purchase' + event_id});
 			if(extra_event != ""){
