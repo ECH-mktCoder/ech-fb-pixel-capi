@@ -128,21 +128,27 @@
 					'user_fn': hashedFn,
 					'user_ln': hashedLn
 				};
-
-				if (typeof fbq === 'function') {
-						fbq('trackCustom', 'ThanksPageView', {
-								value: 0.00,
-								currency: 'HKD',
-								em: hashedEmail,
-								ph: hashedPhone,
-								fn: hashedFn,
-								ln: hashedLn,
-								event_source_url: website_url_no_para,
-								content_category: 'Thank You Page'
-						}, { eventID: 'ThanksPageView' + event_id });
-				} else {
-						console.error('Meta Pixel script not loaded');
+				if(parseInt(Pll)){
+					fbq('trackCustom', 'ThanksPageView', {
+						value: 0.00,
+						currency: 'HKD',
+						em: hashedEmail,
+						ph: hashedPhone,
+						fn: hashedFn,
+						ln: hashedLn,
+						event_source_url: website_url_no_para,
+						content_category: 'Thank You Page'
+					}, { eventID: 'ThanksPageView' + event_id });
+				}else{
+					fbq('trackCustom', 'ThanksPageView', {
+						value: 0.00,
+						currency: 'HKD',
+						em: hashedEmail,
+						event_source_url: website_url_no_para,
+						content_category: 'Thank You Page'
+					}, { eventID: 'ThanksPageView' + event_id });
 				}
+
 
 				jQuery.post(ajaxurl, fb_data, function(rs) {
 					let result = JSON.parse(rs);

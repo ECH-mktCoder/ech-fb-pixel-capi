@@ -119,7 +119,7 @@ class Ech_Fb_Pixel_Capi_Public {
 		$withoutPII_str='';
 		if (array_key_exists('ech_lfg_accept_pll', $registered_settings)) {
 				$accept_pll = get_option( 'ech_lfg_accept_pll' );
-				if( $accept_pll== 0 ) {
+				if( intval($accept_pll) == 0 ) {
 					$withoutPII_str='WithoutPII';
 				}
 		}
@@ -183,17 +183,24 @@ class Ech_Fb_Pixel_Capi_Public {
 		} else {
 			$user_ip = $_SERVER['REMOTE_ADDR'];
 		}
-
-		$user_data = array_filter([
-			"em" => $user_email,
+		
+		$user_data = [
+			"em" => hash('sha256', $user_email),
 			"client_ip_address" => $user_ip,
 			"client_user_agent" => $user_agent,
 			"fbp" => $fbp,
-			"fbc" => $fbc,
-			"ph" => $user_phone,
-			"fn" => $user_fn,
-			"ln" => $user_ln,
-		]);
+			"fbc" => $fbc
+		];
+
+		$registered_settings = get_registered_settings();
+		if (array_key_exists('ech_lfg_accept_pll', $registered_settings)) {
+			$accept_pll = get_option( 'ech_lfg_accept_pll' );
+			if( intval($accept_pll)) {
+				$user_data['ph'] = hash('sha256', $user_phone);
+				$user_data['fn'] = hash('sha256', $user_fn);
+				$user_data['ln'] = hash('sha256', $user_ln);
+			}
+		}
 
 		$param_data = [
 			'event_id' => 'ThanksPageView' . $event_id,
