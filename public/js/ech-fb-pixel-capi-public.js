@@ -40,7 +40,8 @@
 					content_name = contentName,
 					website_url = window.location.href,
 					website_url_no_para = location.origin + location.pathname,
-					fbp = getCookieValue('_fbp');
+					fbp = getCookieValue('_fbp'),
+					external_id = getCookieValue('_fbuuid');
 		let extra_event = "";
 		if(typeof extraEvent != "undefined"){
 			extra_event = extraEvent;
@@ -62,6 +63,7 @@
 			'extra_event' : extraEvent,
 			'fbp': fbp,
 			'fbc': fbc,
+			'external_id':external_id
 		};
 		if(parseInt(Pll)){
 			fbq('track', event_name , {}, {eventID: event_name + event_id});
@@ -70,10 +72,10 @@
 				fbq('track', 'CompleteRegistration',{},{eventID: 'CompleteRegistration' + event_id});
 			}
 		}else{
-			fbq('trackCustom', event_name , { event_source_url: website_url_no_para }, {eventID: event_name + event_id});
-			fbq('trackCustom', 'PurchaseWithoutPII', { value: 0.00, currency: 'HKD', event_source_url: website_url_no_para }, {eventID: 'Purchase' + event_id});
+			fbq('trackCustom', event_name , { event_source_url: website_url_no_para }, {eventID: event_name + event_id, external_id: external_id});
+			fbq('trackCustom', 'PurchaseWithoutPII', { value: 0.00, currency: 'HKD', event_source_url: website_url_no_para }, {eventID: 'Purchase' + event_id, external_id: external_id});
 			if(extra_event != ""){
-				fbq('trackCustom', 'CompleteRegistrationWithoutPII',{ event_source_url: website_url_no_para },{eventID: 'CompleteRegistration' + event_id});
+				fbq('trackCustom', 'CompleteRegistrationWithoutPII',{ event_source_url: website_url_no_para },{eventID: 'CompleteRegistration' + event_id, external_id: external_id});
 			}
 		}
 		jQuery.post(ajaxurl, fb_data, function(rs) {
@@ -101,7 +103,8 @@
 					email = sessionStorage.getItem("fb_email"),
 					phone = sessionStorage.getItem("fb_phone"),
 					fb_fn = sessionStorage.getItem("fb_fn"),
-					fb_ln = sessionStorage.getItem("fb_ln");
+					fb_ln = sessionStorage.getItem("fb_ln"),
+					external_id = getCookieValue('_fbuuid');
 			let fbc = getCookieValue('_fbc');
 			if(fbc==null){
 				let urlParams = new URLSearchParams(website_url);
@@ -126,7 +129,8 @@
 					'user_email': hashedEmail,
 					'user_phone': hashedPhone,
 					'user_fn': hashedFn,
-					'user_ln': hashedLn
+					'user_ln': hashedLn,
+					'external_id':external_id
 				};
 				if(parseInt(Pll)){
 					fbq('trackCustom', 'ThanksPageView', {
@@ -138,7 +142,7 @@
 						ln: hashedLn,
 						event_source_url: website_url_no_para,
 						content_category: 'Thank You Page'
-					}, { eventID: 'ThanksPageView' + event_id });
+					}, { eventID: 'ThanksPageView' + event_id, external_id: external_id });
 				}else{
 					fbq('trackCustom', 'ThanksPageView', {
 						value: 0.00,
@@ -146,9 +150,8 @@
 						em: hashedEmail,
 						event_source_url: website_url_no_para,
 						content_category: 'Thank You Page'
-					}, { eventID: 'ThanksPageView' + event_id });
+					}, { eventID: 'ThanksPageView' + event_id, external_id: external_id });
 				}
-
 
 				jQuery.post(ajaxurl, fb_data, function(rs) {
 					let result = JSON.parse(rs);

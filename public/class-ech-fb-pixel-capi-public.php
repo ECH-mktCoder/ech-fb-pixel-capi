@@ -92,9 +92,9 @@ class Ech_Fb_Pixel_Capi_Public {
 
 	public function insert_fb_pixel_code() {
 		$pixel_id = get_option('ech_lfg_pixel_id');
-		if (!$pixel_id) {
-			return;
-		}
+		if (!$pixel_id) return;
+
+		$uuid = $this->get_external_id();
 		?>
 		<!-- Meta Pixel Code -->
 		<script>
@@ -106,7 +106,9 @@ class Ech_Fb_Pixel_Capi_Public {
 		t.src=v;s=b.getElementsByTagName(e)[0];
 		s.parentNode.insertBefore(t,s)}(window, document,'script',
 		'https://connect.facebook.net/en_US/fbevents.js');
-		fbq('init', '<?= esc_attr($pixel_id); ?>');
+		fbq('init', '<?php echo esc_js($pixel_id); ?>', {
+			external_id: '<?php echo esc_js($uuid); ?>'
+		});
 		fbq('track', 'PageView');
 		</script>
 		<noscript><img height="1" width="1" style="display:none"
@@ -126,6 +128,8 @@ class Ech_Fb_Pixel_Capi_Public {
 		$user_agent = $_POST['user_agent'];
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
+		$external_id = $_POST['external_id'];
+
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
 		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -139,6 +143,7 @@ class Ech_Fb_Pixel_Capi_Public {
 			"client_user_agent"  => $user_agent,
 			"fbp"                => $fbp,
 			"fbc"                => $fbc,
+			"external_id" => $external_id,
 		];
 
 		$registered_settings = get_registered_settings();
@@ -202,6 +207,8 @@ class Ech_Fb_Pixel_Capi_Public {
 		$phone = $_POST['user_phone'];
 		$user_fn = $_POST['user_fn'];
 		$user_ln = $_POST['user_ln'];
+		$external_id = $_POST['external_id'];
+
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
 		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -215,7 +222,8 @@ class Ech_Fb_Pixel_Capi_Public {
 			"client_ip_address" => $user_ip,
 			"client_user_agent" => $user_agent,
 			"fbp" => $fbp,
-			"fbc" => $fbc
+			"fbc" => $fbc,
+			"external_id" => $external_id,
 		];
 
 		$registered_settings = get_registered_settings();
@@ -274,5 +282,27 @@ class Ech_Fb_Pixel_Capi_Public {
     return $result;
 	}
 
+	private function generate_uuid_v4() {
+		$data = random_bytes(16);
+		$data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+		$data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+	}
+	private function get_external_id() {
+		if (!empty($_COOKIE['_fbuuid'])) {
+			return $_COOKIE['_fbuuid'];
+		}
+	
+		$uuid = $this->generate_uuid_v4();
+		setcookie('_fbuuid', hash('sha256', $uuid), [
+			'expires' => time() + 31536000,
+			'path' => '/',
+			'secure' => is_ssl(),
+			'httponly' => false,
+			'samesite' => 'Lax',
+		]);
+	
+		return $uuid;
+	}
 
 }
