@@ -177,6 +177,8 @@ class Ech_Fb_Pixel_Capi {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		
+		$this->loader->add_action( 'wp_head', $plugin_public, 'insert_fb_pixel_code' );
 
 		// ^^^ register FB Click CAPI
 		$this->loader->add_action( 'wp_ajax_FB_event_click', $plugin_public, 'FB_event_click' );

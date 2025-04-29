@@ -90,6 +90,32 @@ class Ech_Fb_Pixel_Capi_Public {
 		wp_localize_script($this->plugin_name, 'echPll', $getAcceptPll);
 	}
 
+	public function insert_fb_pixel_code() {
+		$pixel_id = get_option('ech_lfg_pixel_id');
+		if (!$pixel_id) {
+			return;
+		}
+		?>
+		<!-- Meta Pixel Code -->
+		<script>
+		!function(f,b,e,v,n,t,s)
+		{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+		n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+		if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+		n.queue=[];t=b.createElement(e);t.async=!0;
+		t.src=v;s=b.getElementsByTagName(e)[0];
+		s.parentNode.insertBefore(t,s)}(window, document,'script',
+		'https://connect.facebook.net/en_US/fbevents.js');
+		fbq('init', '<?= esc_attr($pixel_id); ?>');
+		fbq('track', 'PageView');
+		</script>
+		<noscript><img height="1" width="1" style="display:none"
+		src="https://www.facebook.com/tr?id=<?= esc_attr($pixel_id); ?>&ev=PageView&noscript=1"
+		/></noscript>
+		<!-- End Meta Pixel Code -->
+		<?php
+	}
+
 	public function FB_event_click() {
 		
 		$event_id = $_POST['event_id'];
