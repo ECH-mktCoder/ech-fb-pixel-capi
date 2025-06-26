@@ -40,11 +40,11 @@
       </div>
       <div class="form_row">
           <label>Pixel id: </label>
-          <input type="text" name="ech_fbpcapi_pixel_id" value="<?= htmlspecialchars(get_option( 'ech_fbpcapi_pixel_id' ))?>" id="" />
+          <input type="text" name="ech_lfg_pixel_id" value="<?= htmlspecialchars(get_option( 'ech_lfg_pixel_id' ))?>" id="" />
       </div>
       <div class="form_row">
           <label>FB Access Token: </label>
-          <input type="text" name="ech_fbpcapi_fb_access_token" value="<?= htmlspecialchars(get_option( 'ech_fbpcapi_fb_access_token' ))?>" id="" />
+          <input type="text" name="ech_lfg_fb_access_token" value="<?= htmlspecialchars(get_option( 'ech_lfg_fb_access_token' ))?>" id="" />
       </div>
       <div class="form_row">
           <button type="submit"> Save </button>

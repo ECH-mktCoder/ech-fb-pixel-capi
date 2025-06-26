@@ -101,8 +101,8 @@ class Ech_Fb_Pixel_Capi_Admin {
 	 */
 	public function reg_fbpcapi_general_settings() {
 		// Register all settings for general setting page
-		register_setting( 'fbpcapi_gen_settings', 'ech_fbpcapi_pixel_id');
-		register_setting( 'fbpcapi_gen_settings', 'ech_fbpcapi_fb_access_token');
+		register_setting( 'fbpcapi_gen_settings', 'ech_lfg_pixel_id');
+		register_setting( 'fbpcapi_gen_settings', 'ech_lfg_fb_access_token');
 	}
 
 
