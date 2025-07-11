@@ -48,8 +48,11 @@
 		}
 		let fbc = getCookieValue('_fbc');
 		if(fbc==null){
-			let urlParams = new URLSearchParams(website_url);
-			fbc = urlParams.get('fbclid');
+			const urlParams = new URLSearchParams(website_url);
+			const fbclid = urlParams.get('fbclid');
+			if (fbclid) {
+				fbc = 'fb.1.' + Math.floor(Date.now() / 1000) + '.' + fbclid;
+			}
 		}
 		// var ajaxurl = jQuery("#ech_lfg_form").data("ajaxurl");
 		const ajaxurl = "/wp-admin/admin-ajax.php";
@@ -107,8 +110,12 @@
 					external_id = getCookieValue('_fbuuid');
 			let fbc = getCookieValue('_fbc');
 			if(fbc==null){
-				let urlParams = new URLSearchParams(website_url);
-				fbc = urlParams.get('fbclid');
+				const urlParams = new URLSearchParams(website_url);
+				const fbclid = urlParams.get('fbclid');
+				if (fbclid) {
+					fbc = 'fb.1.' + Math.floor(Date.now() / 1000) + '.' + fbclid;
+				}
+				
 			}
 			const ajaxurl = "/wp-admin/admin-ajax.php";
 			
