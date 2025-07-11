@@ -1,6 +1,4 @@
 const pageEnterTimestamp = Math.floor(Date.now() / 1000);
-const urlParams = new URLSearchParams(window.location.search);
-const fbclid = urlParams.get('fbclid');
 (function( $ ) {
 	'use strict';
 
@@ -51,6 +49,8 @@ const fbclid = urlParams.get('fbclid');
 		}
 		let fbc = getCookieValue('_fbc');
 		if(fbc==null){
+			const urlParams = new URLSearchParams(website_url);
+			const fbclid = urlParams.get('fbclid');
 			if (fbclid) {
 				fbc = 'fb.1.' + pageEnterTimestamp + '.' + fbclid;
 			}
@@ -111,9 +111,12 @@ const fbclid = urlParams.get('fbclid');
 					external_id = getCookieValue('_fbuuid');
 			let fbc = getCookieValue('_fbc');
 			if(fbc==null){
+				const urlParams = new URLSearchParams(website_url);
+				const fbclid = urlParams.get('fbclid');
 				if (fbclid) {
 					fbc = 'fb.1.' + pageEnterTimestamp + '.' + fbclid;
 				}
+				
 			}
 			const ajaxurl = "/wp-admin/admin-ajax.php";
 			
