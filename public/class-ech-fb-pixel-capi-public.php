@@ -204,7 +204,7 @@ class Ech_Fb_Pixel_Capi_Public {
 		$fbp = $_POST['fbp'];
 		$fbc = $_POST['fbc'];
 		$user_email = $_POST['user_email'];
-		$phone = $_POST['user_phone'];
+		$user_phone = $_POST['user_phone'];
 		$user_fn = $_POST['user_fn'];
 		$user_ln = $_POST['user_ln'];
 		$external_id = $_POST['external_id'];
